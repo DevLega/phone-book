@@ -4,6 +4,8 @@ import ContactForm from './components/ContactForm'
 import Filter from './components/Filter'
 import ContactList from './components/ContactList'
 
+const STORAGE_KEY = 'contacts'
+
 class App extends Component {
 
   state = {
@@ -14,6 +16,25 @@ class App extends Component {
       { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
     ],
     filter: ''
+  }
+
+  componentDidMount() {
+    const savedContacts = localStorage.getItem(STORAGE_KEY)
+
+    if (savedContacts) {
+      this.setState({
+        contacts: JSON.parse(savedContacts)
+      })
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.contacts !== this.state.contacts) {
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(this.state.contacts)
+      )
+    }
   }
 
   deleteContact = (id) => {
