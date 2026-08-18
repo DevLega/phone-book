@@ -1,15 +1,31 @@
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import './App.css'
 import ContactForm from './components/ContactForm'
 import Filter from './components/Filter'
 import ContactList from './components/ContactList'
-import { addContact, deleteContact, setFilter } from './redux/actions'
-import { selectContacts, selectFilter } from './redux/selector'
+import { addContact, deleteContact, fetchContacts } from './redux/operations'
+import {
+  setFilter,
+  selectContacts,
+  selectFilteredContacts,
+  selectFilter,
+  selectStatus,
+  selectError,
+} from './redux/contactsSlice'
 
 function App() {
   const dispatch = useDispatch()
+
   const contacts = useSelector(selectContacts)
+  const visibleContacts = useSelector(selectFilteredContacts)
   const filter = useSelector(selectFilter)
+  const status = useSelector(selectStatus)
+  const error = useSelector(selectError)
+
+  useEffect(() => {
+    dispatch(fetchContacts())
+  }, [dispatch])
 
   const handleCreate = (name, number) => {
     const isExist = contacts.some(
@@ -19,7 +35,7 @@ function App() {
       alert(`${name} is already in contacts`)
       return
     }
-    dispatch(addContact(name, number))
+    dispatch(addContact({ name, number }))
   }
 
   return (
@@ -28,10 +44,16 @@ function App() {
       <ContactForm onSubmit={handleCreate} />
 
       <h2>Contacts</h2>
-      <Filter onChange={(value) => dispatch(setFilter(value))} />
+      <Filter value={filter} onChange={(value) => dispatch(setFilter(value))} />
+
+      {status === 'loading' && <p>Loading contacts...</p>}
+      {status === 'failed' && <p>Failed to load contacts: {error}</p>}
+      {status === 'succeeded' && visibleContacts.length === 0 && (
+        <p>No contacts found.</p>
+      )}
+
       <ContactList
-        filter={filter}
-        contacts={contacts}
+        contacts={visibleContacts}
         onDelete={(id) => dispatch(deleteContact(id))}
       />
     </div>

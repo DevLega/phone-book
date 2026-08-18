@@ -1,4 +1,3 @@
-import React from 'react'
 import styled from 'styled-components'
 
 const Container = styled.div`
@@ -11,7 +10,6 @@ const Container = styled.div`
     margin: 0;
     font-size: 14px;
     opacity: 0.8;
-    color: #000000;
   }
 
   input {
@@ -28,12 +26,13 @@ const Container = styled.div`
   }
 `
 
-export default function Filter({ onChange }) {
+export default function Filter({ value, onChange }) {
   return (
     <Container>
       <p>Find contacts by name</p>
       <input
         type="text"
+        value={value}
         onChange={(e) => onChange(e.target.value)}
       />
     </Container>

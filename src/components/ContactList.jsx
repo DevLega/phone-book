@@ -1,4 +1,3 @@
-import React from 'react'
 import styled from 'styled-components'
 
 const List = styled.ul`
@@ -42,14 +41,10 @@ const Button = styled.button`
   }
 `
 
-export default function ContactList({ filter, contacts, onDelete }) {
-  const visibleContacts = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(filter.toLowerCase())
-  )
-
+export default function ContactList({ contacts, onDelete }) {
   return (
     <List>
-      {visibleContacts.map(contact => (
+      {contacts.map(contact => (
         <Contact key={contact.id}>
           <Info>{contact.name}: {contact.number}</Info>
           <Button onClick={() => onDelete(contact.id)}>Delete</Button>
